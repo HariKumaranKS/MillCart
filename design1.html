@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Modern E-Commerce UI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: #f4f6f9;
+}
+
+/* HEADER */
+header {
+  background: #ffffff;
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2b7cff;
+}
+
+nav a {
+  margin-left: 25px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+/* HERO */
+.hero {
+  background: linear-gradient(120deg, #2b7cff, #00c6ff);
+  color: white;
+  padding: 80px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hero h1 {
+  font-size: 42px;
+}
+
+.hero p {
+  margin: 15px 0;
+  font-size: 18px;
+}
+
+.hero button {
+  background: white;
+  color: #2b7cff;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* PRODUCTS */
+.section {
+  padding: 50px 40px;
+}
+
+.section h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 32px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+}
+
+.card img {
+  width: 100%;
+  height: 180px;
+  background: #e0e0e0;
+  border-radius: 12px;
+}
+
+.card h3 {
+  margin: 15px 0 5px;
+}
+
+.price {
+  color: #2b7cff;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.card button {
+  width: 100%;
+  padding: 10px;
+  background: #2b7cff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* FOOTER */
+footer {
+  background: #111;
+  color: #bbb;
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">RiceMillCart</div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Products</a>
+    <a href="#">Cart <span id="cart-count">0</span></a>
+    <a href="#">Login</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div>
+    <h1>Your Trusted Rice Mill E-Cart</h1>
+    <p>Order premium rice, bran, and by-products directly from the mill. Fast delivery, best prices!</p>
+    <button>Shop Rice Now</button>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Rice Mill Products</h2>
+  <div class="products">
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Basmati Rice 25kg">
+      <h3>Basmati Rice 25kg</h3>
+      <p class="price">₹1,800</p>
+      <button onclick="addToCart('Basmati Rice 25kg')">Add to Cart</button>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" alt="Sona Masoori Rice 50kg">
+      <h3>Sona Masoori Rice 50kg</h3>
+      <p class="price">₹2,200</p>
+      <button onclick="addToCart('Sona Masoori Rice 50kg')">Add to Cart</button>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80" alt="Rice Bran 40kg">
+      <h3>Rice Bran 40kg</h3>
+      <p class="price">₹900</p>
+      <button onclick="addToCart('Rice Bran 40kg')">Add to Cart</button>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=400&q=80" alt="Broken Rice 50kg">
+      <h3>Broken Rice 50kg</h3>
+      <p class="price">₹1,400</p>
+      <button onclick="addToCart('Broken Rice 50kg')">Add to Cart</button>
+    </div>
+
+  </div>
+</section>
+
+<script>
+// Simple cart counter
+let cartCount = 0;
+function addToCart(product) {
+  cartCount++;
+  document.getElementById('cart-count').textContent = cartCount;
+  alert(product + ' added to cart!');
+}
+</script>
+
+<footer>
+  © 2025 RiceMillCart | Rice Mill E-Cart Platform
+</footer>
+
+</body>
+</html>
+x
