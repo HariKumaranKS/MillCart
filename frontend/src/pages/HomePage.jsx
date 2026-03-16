@@ -25,16 +25,6 @@ export default function HomePage() {
                             <Link to="/about" className="btn-outline">Our Story</Link>
                         </div>
                     </div>
-
-                    <div className="hero-img-container">
-                        <div className="hero-circle">
-                            <img
-                                src="/rice_mill_hero_1772469728940.png"
-                                alt="Sri Sastha Rice Mill"
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            />
-                        </div>
-                    </div>
                 </div>
             </section>
 

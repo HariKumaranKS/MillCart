@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { Package, MapPin, Award, User, Lock, Edit2, LogOut } from 'lucide-react';
+import { Package, MapPin, Award, User, Lock, Edit2, LogOut, Settings } from 'lucide-react';
 
 export default function ProfilePage() {
-    const { user, fetchProfile, logout } = useAuth();
+    const { user, fetchProfile, logout, loading: authLoading } = useAuth();
+    const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState({
@@ -15,12 +17,19 @@ export default function ProfilePage() {
         password: '',
         profilePhoto: user?.profilePhoto || ''
     });
+    const [uploading, setUploading] = useState(false);
 
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5005';
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (!authLoading && !user) {
+            navigate('/login');
+            return;
+        }
+        if (user) {
+            fetchData();
+        }
+    }, [user, authLoading]);
 
     const fetchData = async () => {
         try {
@@ -30,6 +39,30 @@ export default function ProfilePage() {
             toast.error('Failed to load orders');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handlePhotoUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploading(true);
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+            const res = await axios.post(`${API_URL}/api/products/upload-img`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setForm({ ...form, profilePhoto: res.data.imgUrl });
+            // Update profile with new photo immediately
+            await axios.put(`${API_URL}/api/users/profile`, { ...form, profilePhoto: res.data.imgUrl });
+            toast.success('Profile photo updated!');
+            fetchProfile();
+        } catch (error) {
+            toast.error('Upload failed');
+        } finally {
+            setUploading(false);
         }
     };
 
@@ -64,9 +97,11 @@ export default function ProfilePage() {
                             ) : (
                                 <User size={50} color="var(--primary)" />
                             )}
-                            <div style={{ position: 'absolute', bottom: '0', right: '0', background: 'var(--secondary)', padding: '8px', borderRadius: '50%', border: '2px solid #fff', color: 'var(--primary)', cursor: 'pointer' }}>
+                            <label style={{ position: 'absolute', bottom: '0', right: '0', background: 'var(--secondary)', padding: '8px', borderRadius: '50%', border: '2px solid #fff', color: 'var(--primary)', cursor: uploading ? 'wait' : 'pointer' }}>
                                 <Edit2 size={14} />
-                            </div>
+                                <input type="file" onChange={handlePhotoUpload} style={{ display: 'none' }} accept="image/*" disabled={uploading} />
+                            </label>
+                            {uploading && <div className="loader loader-small" style={{ position: 'absolute' }}></div>}
                         </div>
                         <h2 style={{ fontSize: '24px', marginBottom: '5px' }}>{user?.name}</h2>
                         <p style={{ color: '#888', marginBottom: '20px' }}>{user?.email}</p>
@@ -84,18 +119,15 @@ export default function ProfilePage() {
                             </div>
                         </div>
 
-                        <button onClick={logout} className="btn-outline" style={{ width: '100%', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', color: '#ff6b6b', borderColor: '#ff6b6b', borderRadius: '15px' }}>
-                            <LogOut size={20} /> Logout
+                        <button onClick={logout} className="logout-btn-nav" style={{ width: '100%', padding: '15px', borderRadius: '15px', marginTop: '20px' }}>
+                            <LogOut size={20} /> Logout Account
                         </button>
                     </div>
                 </div>
 
                 {/* Right: Forms & History */}
                 <div className="profile-tabs">
-                    <div style={{ display: 'flex', gap: '20px', marginBottom: '30px' }}>
-                        <button className="filter-btn active" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}><User size={18} /> Profile Settings</button>
-                        <button className="filter-btn" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}><Package size={18} /> Order History ({orders.length})</button>
-                    </div>
+
 
                     <div style={{ background: '#fff', padding: '40px', borderRadius: '30px', boxShadow: 'var(--shadow)' }}>
                         <h3 style={{ marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '10px' }}><Settings color="var(--primary)" /> Update Details</h3>

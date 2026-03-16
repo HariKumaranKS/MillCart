@@ -26,7 +26,7 @@ export default function CartPage() {
 
     const removeItem = (id) => {
         setCart(cart.filter(i => i._id !== id));
-        toast.info('Item removed from cart');
+        toast.success('Item removed from cart');
     };
 
     const subtotal = cart.reduce((acc, i) => acc + (i.price * i.quantity), 0);
@@ -40,28 +40,81 @@ export default function CartPage() {
             return;
         }
 
-        if (!address.street || !address.phone || !address.pincode) {
+        if (!address.street || !address.phone || !address.pincode || !address.state) {
             toast.error('Please complete your shipping address');
             return;
         }
 
         setLoading(true);
         try {
-            const res = await axios.post(`${API_URL}/api/orders`, {
-                orderItems: cart,
-                customerDetails: {
-                    name: user.name,
-                    ...address,
-                    address: address.street // Mapping for legacy backend compatibility
-                },
-                total
+            // 1. Create Razorpay Order
+            const { data: { order: paymentOrder } } = await axios.post(`${API_URL}/api/payments/create-order`, {
+                amount: total
             });
 
-            if (res.data.success) {
-                toast.success('🎉 Order placed successfully!');
-                setCart([]);
-                navigate('/profile');
+            // 2. Open Razorpay Checkouts
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                amount: paymentOrder.amount,
+                currency: paymentOrder.currency,
+                name: "Sri Sastha Mill",
+                description: "Premium Rice Order",
+                image: "/logo.jpeg",
+                order_id: paymentOrder.id,
+                handler: async (response) => {
+                    try {
+                        // 3. Verify Payment
+                        const verifyRes = await axios.post(`${API_URL}/api/payments/verify`, response);
+
+                        if (verifyRes.data.success) {
+                            // 4. Place Final Order in Database
+                            const orderRes = await axios.post(`${API_URL}/api/orders`, {
+                                orderItems: cart,
+                                customerDetails: {
+                                    name: user.name,
+                                    ...address,
+                                    address: address.street
+                                },
+                                total,
+                                paymentId: response.razorpay_payment_id
+                            });
+
+                            if (orderRes.data.success) {
+                                toast.success('🎉 Order & Payment Successful!');
+                                setCart([]);
+                                navigate('/profile');
+                            }
+                        }
+                    } catch (err) {
+                        toast.error('Payment verification failed');
+                    }
+                },
+                prefill: {
+                    name: user.name,
+                    email: user.email,
+                    contact: address.phone
+                },
+                theme: { color: "#1E3A19" }
+            };
+
+            if (!window.Razorpay) {
+                toast.error('Razorpay SDK failed to load. Please check your internet connection.');
+                setLoading(false);
+                return;
             }
+
+            if (!paymentOrder || !paymentOrder.id) {
+                toast.error('Failed to initialize payment with server.');
+                setLoading(false);
+                return;
+            }
+
+            const rzp = new window.Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                toast.error(`Payment Failed: ${response.error.description}`);
+            });
+            rzp.open();
+
         } catch (error) {
             toast.error(error.response?.data?.message || 'Checkout failed');
         } finally {
@@ -128,8 +181,9 @@ export default function CartPage() {
                                 onChange={e => setAddress({ ...address, street: e.target.value })}
                             />
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
                             <input className="form-input" placeholder="City" value={address.city} onChange={e => setAddress({ ...address, city: e.target.value })} />
+                            <input className="form-input" placeholder="State" value={address.state} onChange={e => setAddress({ ...address, state: e.target.value })} />
                             <input className="form-input" placeholder="PIN Code" value={address.pincode} onChange={e => setAddress({ ...address, pincode: e.target.value })} />
                         </div>
                         <div className="form-group" style={{ marginTop: '10px' }}>

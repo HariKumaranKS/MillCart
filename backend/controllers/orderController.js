@@ -19,7 +19,7 @@ const addOrderItems = async (req, res) => {
 
         // Validate items and calculate profit
         for (const item of orderItems) {
-            const product = await Product.findById(item.productId || item.product);
+            const product = await Product.findById(item.productId || item.product || item._id);
             if (!product) {
                 return res.status(404).json({ success: false, message: `Product ${item.name} not found` });
             }

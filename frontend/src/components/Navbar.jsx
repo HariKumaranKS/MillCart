@@ -27,7 +27,7 @@ export default function Navbar() {
         <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
             <div className="container nav-content">
                 <Link to="/" className="logo-section">
-                    <img src="/logo.jpeg" alt="Sri Sastha Logo" className="navbar-logo" />
+                    <img src="../logo.jpeg" alt="Sri Sastha Logo" className="navbar-logo" />
                     <div className="logo-text">
                         <span className="name-main">Sri Sastha</span>
                         <span className="name-sub">Modern Rice Mill</span>

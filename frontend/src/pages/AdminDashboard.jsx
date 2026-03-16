@@ -14,7 +14,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
-    const { user, logout } = useAuth();
+    const { user, logout, loading: authLoading } = useAuth();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('dashboard');
     const [stats, setStats] = useState({ metrics: {}, charts: [], frequentBuyers: [], logs: [] });
@@ -54,12 +54,13 @@ export default function AdminDashboard() {
     };
 
     useEffect(() => {
-        if (!user?.isAdmin) {
+        if (authLoading) return;
+        if (!user || !user.isAdmin) {
             navigate('/');
             return;
         }
         fetchData();
-    }, [activeTab]);
+    }, [activeTab, authLoading, user]);
 
     const fetchData = async () => {
         try {
@@ -138,8 +139,8 @@ export default function AdminDashboard() {
                 boxShadow: '10px 0 30px rgba(0,0,0,0.1)'
             }}>
                 <div className="sidebar-brand" style={{ marginBottom: '60px', textAlign: 'center' }}>
-                    <div className="logo-mark" style={{ margin: '0 auto 15px' }}>S</div>
-                    <h2 style={{ color: 'var(--primary)', fontSize: '20px' }}>Mill Admin <span>v2.0</span></h2>
+
+                    <h2 style={{ color: 'var(--primary)', fontSize: '20px' }}>Mill Admin </h2>
                 </div>
 
                 <nav className="sidebar-nav" style={{ flex: '1' }}>

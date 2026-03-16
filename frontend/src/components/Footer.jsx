@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Footer() {
     return (
@@ -19,17 +19,6 @@ export default function Footer() {
                             Dedicated to providing premium quality rice since 1990. We bridge the gap between
                             traditional rice farming and modern automated milling.
                         </p>
-                        <div style={{ display: 'flex', gap: '15px' }}>
-                            {[Facebook, Twitter, Instagram].map((Icon, idx) => (
-                                <a key={idx} href="#" style={{
-                                    width: '40px', height: '40px', background: 'rgba(255,255,255,0.1)',
-                                    color: 'var(--primary)', display: 'flex', alignItems: 'center',
-                                    justifyContent: 'center', borderRadius: '50%', transition: 'var(--transition)'
-                                }}>
-                                    <Icon size={20} />
-                                </a>
-                            ))}
-                        </div>
                     </div>
 
                     <div className="footer-links">
@@ -74,7 +63,6 @@ export default function Footer() {
                 <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', marginBottom: '40px' }}></div>
                 <div style={{ textAlign: 'center', fontSize: '14px' }}>
                     &copy; {new Date().getFullYear()} Sri Sastha Modern Rice Mill. All rights reserved.
-                    <span style={{ marginLeft: '20px', color: 'var(--primary-dark)' }}>Modernized by Sri Sastha Tech</span>
                 </div>
             </div>
         </footer>

@@ -218,6 +218,28 @@ h4,
   box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
+.logout-btn-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: #ff6b6b;
+  border: 1.5px solid #ff6b6b;
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.logout-btn-nav:hover {
+  background: #ff6b6b;
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
 .nav-actions {
   display: flex;
   align-items: center;

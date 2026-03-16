@@ -19,7 +19,11 @@ const signup = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({ name, email, password: hashedPassword });
+
+        // Grant admin status if the email matches the predefined ADMIN_EMAIL in .env
+        const isAdmin = email === process.env.ADMIN_EMAIL;
+
+        const user = await User.create({ name, email, password: hashedPassword, isAdmin });
 
         if (user) {
             const { password: _, ...userWithoutPassword } = user.toObject();
@@ -41,6 +45,29 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        // Predefined Admin Check
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+            let adminUser = await User.findOne({ email });
+            if (!adminUser) {
+                adminUser = await User.create({
+                    name: 'Admin',
+                    email: email,
+                    password: await bcrypt.hash(password, 10),
+                    isAdmin: true
+                });
+            } else if (!adminUser.isAdmin) {
+                adminUser.isAdmin = true;
+                await adminUser.save();
+            }
+
+            const { password: _, ...userWithoutPassword } = adminUser.toObject();
+            return res.json({
+                success: true,
+                user: userWithoutPassword,
+                token: generateToken(adminUser._id)
+            });
+        }
+
         const user = await User.findOne({ email });
         if (user) {
             // Check if password matches (handle both hashed and plain text for migration)
