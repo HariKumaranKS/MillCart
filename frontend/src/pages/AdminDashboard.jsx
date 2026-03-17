@@ -138,10 +138,7 @@ export default function AdminDashboard() {
                 padding: '40px 20px', display: 'flex', flexDirection: 'column',
                 boxShadow: '10px 0 30px rgba(0,0,0,0.1)'
             }}>
-                <div className="sidebar-brand" style={{ marginBottom: '60px', textAlign: 'center' }}>
 
-                    <h2 style={{ color: 'var(--primary)', fontSize: '20px' }}>Mill Admin </h2>
-                </div>
 
                 <nav className="sidebar-nav" style={{ flex: '1' }}>
                     {[
@@ -197,7 +194,7 @@ export default function AdminDashboard() {
                         {/* Metrics Grid */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '25px', marginBottom: '40px' }}>
                             {[
-                                { label: 'Total Sales', value: stats.metrics.totalSales, icon: <DollarSign />, color: '#4CAF50' },
+                                { label: 'Total Sales', value: stats.metrics.totalSales, color: '#4CAF50' },
                                 { label: 'Total Profit', value: stats.metrics.totalProfit, icon: <TrendingUp />, color: '#D4AF37' },
                                 { label: 'Orders', value: stats.metrics.orderCount, icon: <ShoppingCart />, color: '#2196F3' },
                                 { label: 'Customers', value: stats.metrics.users, icon: <Users />, color: '#9C27B0' }
