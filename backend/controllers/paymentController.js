@@ -24,11 +24,9 @@ const createOrder = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid payment amount' });
         }
 
-        console.log(`Creating Razorpay Order for amount: ${options.amount} paise`);
         const order = await razorpay.orders.create(options);
         res.json({ success: true, order });
     } catch (error) {
-        console.error('Razorpay Error Details:', error);
         res.status(500).json({ success: false, message: 'Could not create order: ' + (error.error?.description || error.message) });
     }
 };

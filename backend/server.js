@@ -23,8 +23,8 @@ app.use(morgan('dev'));
 // Database Connection
 const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://harikumaran210_db_user:1Sqa8XTgzBkKnVuf@cluster0.wgtlvjc.mongodb.net/Mill?retryWrites=true&w=majority&appName=Cluster0';
 mongoose.connect(MONGO_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+  .then(() => { })
+  .catch((err) => { });
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -53,4 +53,4 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5005;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT);

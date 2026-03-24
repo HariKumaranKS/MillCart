@@ -70,7 +70,6 @@ const storeLog = async (req, res) => {
         });
         res.status(201).json({ success: true });
     } catch (error) {
-        console.error('Log error:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 };

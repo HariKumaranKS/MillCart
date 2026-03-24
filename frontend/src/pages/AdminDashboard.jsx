@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
     LayoutDashboard, Package, ShoppingCart, Users, Settings,
     LogOut, TrendingUp, DollarSign, Activity, ChevronRight,
-    Edit, Trash2, Plus, Search, Filter, AlertCircle, Clock
+    Edit, Trash2, Plus, Search, Filter, AlertCircle, Clock, Menu
 } from 'lucide-react';
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -21,6 +21,7 @@ export default function AdminDashboard() {
     const [products, setProducts] = useState([]);
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isHovered, setIsHovered] = useState(false);
 
     // Form States
     const [productForm, setProductForm] = useState({
@@ -132,13 +133,34 @@ export default function AdminDashboard() {
 
     return (
         <div className="admin-layout" style={{ display: 'flex', minHeight: '100vh', background: '#F4F7F6' }}>
-            {/* Sidebar */}
-            <aside className="admin-sidebar" style={{
-                width: '280px', background: 'var(--secondary)', color: '#fff',
-                padding: '40px 20px', display: 'flex', flexDirection: 'column',
-                boxShadow: '10px 0 30px rgba(0,0,0,0.1)'
-            }}>
+            <aside
+                className="admin-sidebar"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                style={{
+                    width: isHovered ? '280px' : '90px',
+                    background: 'var(--secondary)', color: '#fff',
+                    padding: isHovered ? '40px 20px' : '40px 15px', display: 'flex', flexDirection: 'column',
+                    boxShadow: '10px 0 30px rgba(0,0,0,0.1)',
+                    transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    position: 'relative',
+                    zIndex: 10
+                }}>
 
+                {/* Sidebar Header (Hamburger & Title) */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '50px', padding: '0 5px', justifyContent: isHovered ? 'flex-start' : 'center', transition: 'all 0.3s' }}>
+                    <Menu size={28} style={{ cursor: 'pointer', flexShrink: 0, color: 'var(--primary)' }} />
+                    <span style={{
+                        fontSize: '22px', fontWeight: '800', fontFamily: 'Playfair Display',
+                        opacity: isHovered ? 1 : 0,
+                        width: isHovered ? 'auto' : 0,
+                        transition: 'opacity 0.3s', color: 'var(--primary)'
+                    }}>
+                        Mill Admin
+                    </span>
+                </div>
 
                 <nav className="sidebar-nav" style={{ flex: '1' }}>
                     {[
@@ -153,15 +175,27 @@ export default function AdminDashboard() {
                             onClick={() => setActiveTab(item.id)}
                             className={`sidebar-link ${activeTab === item.id ? 'active' : ''}`}
                             style={{
-                                width: '100%', padding: '15px 20px', display: 'flex', alignItems: 'center', gap: '15px',
+                                width: '100%', padding: '15px', display: 'flex', alignItems: 'center', gap: '15px',
                                 background: activeTab === item.id ? 'var(--primary)' : 'transparent',
                                 color: activeTab === item.id ? 'var(--secondary)' : 'rgba(255,255,255,0.7)',
                                 border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: '700',
-                                marginBottom: '10px', transition: 'all 0.3s'
+                                marginBottom: '10px', transition: 'all 0.3s',
+                                justifyContent: isHovered ? 'flex-start' : 'center',
+                                position: 'relative'
                             }}
+                            title={!isHovered ? item.label : ''}
                         >
-                            {React.cloneElement(item.icon, { size: 20 })}
-                            {item.label}
+                            <div style={{ flexShrink: 0, display: 'flex' }}>
+                                {React.cloneElement(item.icon, { size: 24 })}
+                            </div>
+                            <span style={{
+                                opacity: isHovered ? 1 : 0,
+                                width: isHovered ? 'auto' : 0,
+                                transition: 'opacity 0.3s',
+                                overflow: 'hidden'
+                            }}>
+                                {item.label}
+                            </span>
                         </button>
                     ))}
                 </nav>
@@ -169,9 +203,18 @@ export default function AdminDashboard() {
                 <button onClick={logout} className="sidebar-logout" style={{
                     padding: '15px', color: '#ff6b6b', background: 'rgba(255,107,107,0.1)',
                     border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: '700',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px'
-                }}>
-                    <LogOut size={20} /> Logout
+                    display: 'flex', alignItems: 'center', gap: '15px',
+                    transition: 'all 0.3s', justifyContent: isHovered ? 'flex-start' : 'center'
+                }} title={!isHovered ? 'Logout' : ''}>
+                    <div style={{ flexShrink: 0, display: 'flex' }}><LogOut size={24} /></div>
+                    <span style={{
+                        opacity: isHovered ? 1 : 0,
+                        width: isHovered ? 'auto' : 0,
+                        transition: 'opacity 0.3s',
+                        overflow: 'hidden'
+                    }}>
+                        Logout
+                    </span>
                 </button>
             </aside>
 
